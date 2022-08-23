@@ -3,60 +3,91 @@ library(dplyr)
 library(lubridate)
 library(ggplot2)
 library(viridis)
-library(Taxonstand)
-## prepares raw data and creates dataset for analyses
 
-setwd('/Volumes/bombus/Dropbox (University of Oregon)/')
+## prepares raw data and creates dataset for visualization and analyses
 
-setwd("forestosmia_saved")
+setwd("~/Dropbox")
+setwd("climate-smart-landscapes-saved")
 
-parasite <- read.csv("data/parasite.csv",
+climatesurvey <- read.csv("data/climatedata.csv",
                      stringsAsFactors=FALSE)
 
-floral <- read.csv("data/floral2.csv", stringsAsFactors=FALSE)
+## some useful functions for cleaning/exporting data
+source("../climate-smart-landscapes/dataPrep/src/misc.R")
 
-repro <- read.csv("data/reproductive.csv",
-                  stringsAsFactors=FALSE)
+## we'll put the cleaned data here
+dir <- "cleanedData"
 
-standinfo <- read.csv("data/standinfo.csv",
-                      stringsAsFactors=FALSE)
 
-insect <- read.csv("data/insect-all.csv",
-                   stringsAsFactors=FALSE)
-
-source("../forestosmia/dataPrep/src/siteNames.R")
-source("../forestosmia/dataPrep/src/misc.R")
-
-dir <- "cleaneddata"
 
 ## ***********************************************************
-## parasite data
+## drop columns & unfinished surveys
 ## ***********************************************************
 
-dim(parasite)
+dim(climatesurvey)
 
-## drop the NOTES column
-parasite$NOTES <- NULL
+## drop the extra columns
+climatesurvey$StartDate <- NULL
+climatesurvey$EndDate <- NULL
+climatesurvey$Status <- NULL
+climatesurvey$Progress <- NULL
+climatesurvey$Duration..in.seconds. <- NULL
+climatesurvey$IPAddress <- NULL
+climatesurvey$RecipientLastName <- NULL
+climatesurvey$RecipientFirstName <- NULL
+climatesurvey$RecipientEmail <- NULL
+climatesurvey$ExternalReference <- NULL
+climatesurvey$LocationLatitude <- NULL
+climatesurvey$LocationLongitude <- NULL
+climatesurvey$DistributionChannel <- NULL
+climatesurvey$UserLanguage <- NULL
 
-## drop all the no template controls under UniqueID because they were
-## all neg for parasites
-parasite <- parasite[!parasite$UniqueID == "C",]
-dim(parasite)
+dim(climatesurvey)
 
-## drop any sample where Apidae isnt 1
-parasite <- parasite[!parasite$ApidaeCtrl == 0,]
-dim(parasite)
+## drop the extra rows
+climatesurvey <- climatesurvey[-c(1,2), ]
 
-## dropped about 10 specimens
 
-## We may want to compare parasites in unemerged and foraging bees, in
-## which case use "parasitecontrol" object. However, for most
-## analyses, we want to lose the unemerged, control bees, use
-## "parasite"
+## drop all surveys that were not completed
+climatesurvey <- climatesurvey[climatesurvey$Finished != FALSE, ]
+dim(climatesurvey)
 
-parasitecontrol <- parasite
-parasite <- parasitecontrol[!parasitecontrol$Stand == "control",]
-dim(parasite)
+## dropped about 52 surveys
+
+
+## ***********************************************************
+## rename columns
+## ***********************************************************
+
+
+## For response ID, make sure string of numbers is read as characters, and rename as UniqueID
+## I don't have to do this, just wanted to see if i could
+climatesurvey$ResponseId <- as.character(climatesurvey$ResponseId )
+
+
+
+
+parasite$Stand[parasite$Stand ==
+                 "norton hill"]  <- "Norton Hill"
+parasite$Stand[parasite$Stand ==
+                 "Norton hill"]  <- "Norton Hill"
+parasite$Stand[parasite$Stand ==
+                 "buttermilk creek"]  <- "Buttermilk Creek"
+parasite$Stand[parasite$Stand ==
+                 "lake lyons"]  <- "Lake Lyons"
+## ***********************************************************
+## clean up white space in columns, see functions in src/misc
+## ***********************************************************
+
+
+## ***********************************************************
+## In recorded date column, drop the time
+## ***********************************************************
+
+
+## ***********************************************************
+## summarize demographics, number of respondents
+## ***********************************************************
 
 ## community health metrics
 parasitenames <- c("Crithidia", "Ascophaera", "Apicystis")
