@@ -4,8 +4,10 @@ library(lubridate)
 library(ggplot2)
 library(viridis)
 library(openxlsx)
-library(dplyr)
 library(tidyverse)
+library(ggpubr)
+library(scales)
+library(wesanderson)
 
 ## prepares raw data and creates dataset for visualization and analyses
 
@@ -297,13 +299,542 @@ write.xlsx(tabledata, file=file.path(dirTables,
 ## FIGURE - Q9 Do you think that green industry should be doing more less (NAs removed)
 ## **************************************************************************************
 
+# rename responses
+climatesurvey$Q9 <- fct_recode(climatesurvey$Q9,
+                               "Currently enough" = "Currently doing the right amount")
+# reorder
+climatesurvey$Q9 <- factor(climatesurvey$Q9,
+                           levels = c("Much more", "More", "Currently enough", "Less", "Much less"))
+
+
+# plot
+Q9plot <- climatesurvey %>% 
+  drop_na(Q9) %>%
+  count(Q9 = factor(Q9)) %>% 
+  mutate(pct = prop.table(n)) %>% 
+  ggplot(aes(x = Q9, y = pct, fill = Q9, label = scales::percent(pct))) + 
+  geom_col(position = 'dodge') + 
+  geom_text(vjust = -1.5,
+            hjust = 0, 
+            nudge_x = -.5,
+            nudge_y = .01,
+            size = 4) + 
+  scale_y_continuous(labels = scales::percent_format(accuracy = 1), 
+                     breaks = scales::pretty_breaks(n = 5), 
+                     limits = c(0, .5)) +
+  scale_fill_manual(values = rev(wes_palette("Zissou1", n = 5)))+
+  xlab("") + 
+  ylab("Percentage") +
+  theme_pubr() +
+  coord_flip()
+
+# clean plot
+Q9plot + theme(axis.text.y   = element_text(size=14),
+               axis.text.x   = element_text(size=14, angle=45, vjust=0.5),
+               axis.title.y  = element_text(size=14),
+               axis.title.x  = element_text(size=14),
+               panel.background = element_blank(),
+               panel.grid.major = element_blank(), 
+               panel.grid.minor = element_blank(),
+               axis.line = element_line(colour = "black"),
+               panel.border = element_rect(colour = "black", fill=NA, size=0.75),
+               legend.position = "none")
+
+ggsave("figs/Q9.pdf",
+       height=4, width=5)
+
 ## **************************************************************************************
 ## FIGURE - Q11 Please evaluate the following statements (attitudes) (NAs removed)
 ## **************************************************************************************
 
+# reorder
+climatesurvey$Q11_1 <- factor(climatesurvey$Q11_1,
+                              levels = c("Strongly disagree", "Somewhat disagree", "Undecided", "Somewhat agree", "Strongly agree"))
+climatesurvey$Q11_2 <- factor(climatesurvey$Q11_2,
+                              levels = c("Strongly disagree", "Somewhat disagree", "Undecided", "Somewhat agree", "Strongly agree"))
+climatesurvey$Q11_3 <- factor(climatesurvey$Q11_3,
+                              levels = c("Strongly disagree", "Somewhat disagree", "Undecided", "Somewhat agree", "Strongly agree"))
+climatesurvey$Q11_4 <- factor(climatesurvey$Q11_4,
+                              levels = c("Strongly disagree", "Somewhat disagree", "Undecided", "Somewhat agree", "Strongly agree"))
+climatesurvey$Q11_5 <- factor(climatesurvey$Q11_5,
+                              levels = c("Strongly disagree", "Somewhat disagree", "Undecided", "Somewhat agree", "Strongly agree"))
+climatesurvey$Q11_6 <- factor(climatesurvey$Q11_6,
+                              levels = c("Strongly disagree", "Somewhat disagree", "Undecided", "Somewhat agree", "Strongly agree"))
+
+
+
+### Q11_1
+# plot
+Q11_1plot <- climatesurvey %>% 
+  drop_na(Q11_1) %>%
+  count(Q11_1 = factor(Q11_1)) %>% 
+  mutate(pct = prop.table(n)) %>% 
+  ggplot(aes(x = Q11_1, y = pct, fill = Q11_1, label = scales::percent(pct))) + 
+  geom_col(position = 'dodge') + 
+  geom_text(vjust = -1.5,
+            hjust = 0, 
+            nudge_x = -.5,
+            nudge_y = .01,
+            size = 4) + 
+  scale_y_continuous(labels = scales::percent_format(accuracy = 1), 
+                     breaks = scales::pretty_breaks(n = 5), 
+                     limits = c(0, .5)) +
+  scale_fill_manual(values = rev(wes_palette("Zissou1", n = 5)))+
+  xlab("I am concerned\nabout climate change") + 
+  ylab("") +
+  theme_pubr() +
+  coord_flip()
+
+# clean plot
+Q11_1plot <- Q11_1plot + theme(axis.text.y   = element_blank(),
+                               axis.text.x   = element_blank(),
+                               axis.title.y  = element_text(size=14, angle=0, vjust=0.5),
+                               axis.title.x  = element_text(size=14),
+                               #panel.background = element_blank(),
+                               #panel.grid.major = element_blank(), 
+                               #panel.grid.minor = element_blank(),
+                               #axis.line = element_line(colour = "black"),
+                               #panel.border = element_rect(colour = "black", fill=NA, size=0.75),
+                               legend.position = "none",
+                               legend.title=element_blank())
+
+ggsave("figs/Q11_1.pdf",
+       height=4, width=12)
+
+
+### Q11_2
+# plot
+Q11_2plot <- climatesurvey %>% 
+  drop_na(Q11_2) %>%
+  count(Q11_2 = factor(Q11_2)) %>% 
+  mutate(pct = prop.table(n)) %>% 
+  ggplot(aes(x = Q11_2, y = pct, fill = Q11_2, label = scales::percent(pct))) + 
+  geom_col(position = 'dodge') + 
+  geom_text(vjust = -1.5,
+            hjust = 0, 
+            nudge_x = -.5,
+            nudge_y = .01,
+            size = 4) + 
+  scale_y_continuous(labels = scales::percent_format(accuracy = 1), 
+                     breaks = scales::pretty_breaks(n = 5), 
+                     limits = c(0, .5)) +
+  scale_fill_manual(values = rev(wes_palette("Zissou1", n = 5)))+
+  xlab("I want to learn more about \n how to slow down climate\nchange through my work") + 
+  ylab("") +
+  theme_pubr() +
+  coord_flip()
+
+# clean plot
+Q11_2plot <- Q11_2plot + theme(axis.text.y   = element_blank(),
+                               axis.text.x   = element_blank(),
+                               axis.title.y  = element_text(size=14, angle=0, vjust=0.5),
+                               axis.title.x  = element_text(size=14),
+                               #panel.background = element_blank(),
+                               #panel.grid.major = element_blank(), 
+                               #panel.grid.minor = element_blank(),
+                               #axis.line = element_line(colour = "black"),
+                               #panel.border = element_rect(colour = "black", fill=NA, size=0.75),
+                               legend.position = "none",
+                               legend.title=element_blank())
+
+ggsave("figs/Q11_2.pdf",
+       height=4, width=12)
+
+
+### Q11_3
+# plot
+Q11_3plot <- climatesurvey %>% 
+  drop_na(Q11_3) %>%
+  count(Q11_3 = factor(Q11_3)) %>% 
+  mutate(pct = prop.table(n)) %>% 
+  ggplot(aes(x = Q11_3, y = pct, fill = Q11_3, label = scales::percent(pct))) + 
+  geom_col(position = 'dodge') + 
+  geom_text(vjust = -1.5,
+            hjust = 0, 
+            nudge_x = -.5,
+            nudge_y = .01,
+            size = 4) + 
+  scale_y_continuous(labels = scales::percent_format(accuracy = 1), 
+                     breaks = scales::pretty_breaks(n = 5), 
+                     limits = c(0, .5)) +
+  scale_fill_manual(values = rev(wes_palette("Zissou1", n = 5)))+
+  xlab("I consider the carbon \nfootprint of the equipment \nI use for work") + 
+  ylab("") +
+  theme_pubr() +
+  coord_flip()
+
+# clean plot
+Q11_3plot <- Q11_3plot + theme(axis.text.y   = element_blank(),
+                               axis.text.x   = element_blank(),
+                               axis.title.y  = element_text(size=14, angle=0, vjust=0.5),
+                               axis.title.x  = element_text(size=14),
+                               #panel.background = element_blank(),
+                               #panel.grid.major = element_blank(), 
+                               #panel.grid.minor = element_blank(),
+                               #axis.line = element_line(colour = "black"),
+                               #panel.border = element_rect(colour = "black", fill=NA, size=0.75),
+                               legend.position = "none",
+                               legend.title=element_blank())
+
+ggsave("figs/Q11_3.pdf",
+       height=4, width=12)
+
+
+
+
+### Q11_4
+# plot
+Q11_4plot <- climatesurvey %>% 
+  drop_na(Q11_4) %>%
+  count(Q11_4 = factor(Q11_4)) %>% 
+  mutate(pct = prop.table(n)) %>% 
+  ggplot(aes(x = Q11_4, y = pct, fill = Q11_4, label = scales::percent(pct))) + 
+  geom_col(position = 'dodge') + 
+  geom_text(vjust = -1.5,
+            hjust = 0, 
+            nudge_x = -.5,
+            nudge_y = .01,
+            size = 4) + 
+  scale_y_continuous(labels = scales::percent_format(accuracy = 1), 
+                     breaks = scales::pretty_breaks(n = 5), 
+                     limits = c(0, .5)) +
+  scale_fill_manual(values = rev(wes_palette("Zissou1", n = 5)))+
+  xlab("There are strategies and \ntechnologies that my\n company could adopt \n today to reduce \nclimate change") + 
+  ylab("") +
+  theme_pubr() +
+  coord_flip()
+
+# clean plot
+Q11_4plot <- Q11_4plot + theme(axis.text.y   = element_blank(),
+                               axis.text.x   = element_blank(),
+                               axis.title.y  = element_text(size=14, angle=0, vjust=0.5),
+                               axis.title.x  = element_text(size=14),
+                               #panel.background = element_blank(),
+                               #panel.grid.major = element_blank(), 
+                               #panel.grid.minor = element_blank(),
+                               #axis.line = element_line(colour = "black"),
+                               #panel.border = element_rect(colour = "black", fill=NA, size=0.75),
+                               legend.position = "none",
+                               legend.title=element_blank())
+ggsave("figs/Q11_4.pdf",
+       height=4, width=12)
+
+
+
+### Q11_5
+# plot
+Q11_5plot <- climatesurvey %>% 
+  drop_na(Q11_5) %>%
+  count(Q11_5 = factor(Q11_5)) %>% 
+  mutate(pct = prop.table(n)) %>% 
+  ggplot(aes(x = Q11_5, y = pct, fill = Q11_5, label = scales::percent(pct))) + 
+  geom_col(position = 'dodge') + 
+  geom_text(vjust = -1.5,
+            hjust = 0, 
+            nudge_x = -.5,
+            nudge_y = .01,
+            size = 4) + 
+  scale_y_continuous(labels = scales::percent_format(accuracy = 1), 
+                     breaks = scales::pretty_breaks(n = 5), 
+                     limits = c(0, .5)) +
+  scale_fill_manual(values = rev(wes_palette("Zissou1", n = 5)))+
+  xlab("Part of my role at work \n should be to prepare \nlandscapes for the impacts \nof climate change") + 
+  ylab("Percentage") +
+  theme_pubr() +
+  coord_flip()
+
+# clean plot
+Q11_5plot <- Q11_5plot + theme(axis.text.y   = element_blank(),
+                               axis.text.x   = element_text(size=14, angle=0, vjust=0.5),
+                               axis.title.y  = element_text(size=14, angle=0, vjust=0.5),
+                               axis.title.x  = element_text(size=14),
+                               #panel.background = element_blank(),
+                               #panel.grid.major = element_blank(), 
+                               #panel.grid.minor = element_blank(),
+                               #axis.line = element_line(colour = "black"),
+                               #panel.border = element_rect(colour = "black", fill=NA, size=0.75),
+                               legend.position = "none",
+                               legend.title=element_blank())
+
+ggsave("figs/Q11_5.pdf",
+       height=4, width=12)
+
+
+
+### Q11_6
+# plot
+Q11_6plot <- climatesurvey %>% 
+  drop_na(Q11_6) %>%
+  count(Q11_6 = factor(Q11_6)) %>% 
+  mutate(pct = prop.table(n)) %>% 
+  ggplot(aes(x = Q11_6, y = pct, fill = Q11_6, label = scales::percent(pct))) + 
+  geom_col(position = 'dodge') + 
+  geom_text(vjust = -1.5,
+            hjust = 0, 
+            nudge_x = -.5,
+            nudge_y = .01,
+            size = 4) + 
+  scale_y_continuous(labels = scales::percent_format(accuracy = 1), 
+                     breaks = scales::pretty_breaks(n = 5), 
+                     limits = c(0, .5)) +
+  scale_fill_manual(values = rev(wes_palette("Zissou1", n = 5)))+
+  xlab("I am concerned that \n increasing heat & humidity from \n climate change will result \n in heat-related illness\n in workers") + 
+  ylab("Percentage") +
+  theme_pubr() +
+  coord_flip()
+
+# clean plot
+Q11_6plot <- Q11_6plot + theme(axis.text.y   = element_blank(),
+                               axis.text.x   = element_text(size=14, angle=0, vjust=0.5),
+                               axis.title.y  = element_text(size=14, angle=0, vjust=0.5),
+                               axis.title.x  = element_text(size=14),
+                               #panel.background = element_blank(),
+                               #panel.grid.major = element_blank(), 
+                               #panel.grid.minor = element_blank(),
+                               #axis.line = element_line(colour = "black"),
+                               #panel.border = element_rect(colour = "black", fill=NA, size=0.75),
+                               legend.position = "none",
+                               legend.title=element_blank())
+
+
+ggsave("figs/Q11_6.pdf",
+       height=4, width=12)
+
+
+# add all plots on single layout
+
+ggarrange(Q11_1plot, Q11_2plot, Q11_3plot, Q11_4plot, Q11_5plot, Q11_6plot,
+          common.legend = TRUE, legend = "top",
+          align=c("v"),
+          ncol = 2, nrow = 3)
+
+ggsave("figs/Q11.pdf",
+       height=8, width=14)
+
 ## **************************************************************************************
 ## FIGURE - Q13 Please evaluate the following statements (incentives) (NAs removed)
 ## **************************************************************************************
+
+# reorder
+climatesurvey$Q13_1 <- factor(climatesurvey$Q11_1,
+                              levels = c("Strongly disagree", "Somewhat disagree", "Undecided", "Somewhat agree", "Strongly agree"))
+climatesurvey$Q13_2 <- factor(climatesurvey$Q11_2,
+                              levels = c("Strongly disagree", "Somewhat disagree", "Undecided", "Somewhat agree", "Strongly agree"))
+climatesurvey$Q13_3 <- factor(climatesurvey$Q11_3,
+                              levels = c("Strongly disagree", "Somewhat disagree", "Undecided", "Somewhat agree", "Strongly agree"))
+climatesurvey$Q13_4 <- factor(climatesurvey$Q11_4,
+                              levels = c("Strongly disagree", "Somewhat disagree", "Undecided", "Somewhat agree", "Strongly agree"))
+climatesurvey$Q13_5 <- factor(climatesurvey$Q11_5,
+                              levels = c("Strongly disagree", "Somewhat disagree", "Undecided", "Somewhat agree", "Strongly agree"))
+
+
+### Q13_1
+# plot
+Q13_1plot <- climatesurvey %>% 
+  drop_na(Q13_1) %>%
+  count(Q13_1 = factor(Q13_1)) %>% 
+  mutate(pct = prop.table(n)) %>% 
+  ggplot(aes(x = Q13_1, y = pct, fill = Q13_1, label = scales::percent(pct))) + 
+  geom_col(position = 'dodge') + 
+  geom_text(vjust = -1.5,
+            hjust = 0, 
+            nudge_x = -.5,
+            nudge_y = .01,
+            size = 4) + 
+  scale_y_continuous(labels = scales::percent_format(accuracy = 1), 
+                     breaks = scales::pretty_breaks(n = 5), 
+                     limits = c(0, .5)) +
+  scale_fill_manual(values = rev(wes_palette("Zissou1", n = 5)))+
+  xlab("Obtaining a climate-friendly \ncertification is a business \nadvantage") + 
+  ylab("") +
+  theme_pubr() +
+  coord_flip()
+
+# clean plot
+Q13_1plot <- Q13_1plot + theme(axis.text.y   = element_blank(),
+                               axis.text.x   = element_blank(),
+                               axis.title.y  = element_text(size=14, angle=0, vjust=0.5),
+                               axis.title.x  = element_text(size=14),
+                               #panel.background = element_blank(),
+                               #panel.grid.major = element_blank(), 
+                               #panel.grid.minor = element_blank(),
+                               #axis.line = element_line(colour = "black"),
+                               #panel.border = element_rect(colour = "black", fill=NA, size=0.75),
+                               legend.position = "none",
+                               legend.title=element_blank())
+
+ggsave("figs/Q13_1.pdf",
+       height=4, width=12)
+
+
+### Q13_2
+# plot
+Q13_2plot <- climatesurvey %>% 
+  drop_na(Q13_2) %>%
+  count(Q13_2 = factor(Q13_2)) %>% 
+  mutate(pct = prop.table(n)) %>% 
+  ggplot(aes(x = Q13_2, y = pct, fill = Q13_2, label = scales::percent(pct))) + 
+  geom_col(position = 'dodge') + 
+  geom_text(vjust = -1.5,
+            hjust = 0, 
+            nudge_x = -.5,
+            nudge_y = .01,
+            size = 4) + 
+  scale_y_continuous(labels = scales::percent_format(accuracy = 1), 
+                     breaks = scales::pretty_breaks(n = 5), 
+                     limits = c(0, .5)) +
+  scale_fill_manual(values = rev(wes_palette("Zissou1", n = 5)))+
+  xlab("Marketing my company\nas climate-friendly is\na business advantaget") + 
+  ylab("") +
+  theme_pubr() +
+  coord_flip()
+
+# clean plot
+Q13_2plot <- Q13_2plot + theme(axis.text.y   = element_blank(),
+                               axis.text.x   = element_blank(),
+                               axis.title.y  = element_text(size=14, angle=0, vjust=0.5),
+                               axis.title.x  = element_text(size=14),
+                               #panel.background = element_blank(),
+                               #panel.grid.major = element_blank(), 
+                               #panel.grid.minor = element_blank(),
+                               #axis.line = element_line(colour = "black"),
+                               #panel.border = element_rect(colour = "black", fill=NA, size=0.75),
+                               legend.position = "none",
+                               legend.title=element_blank())
+
+ggsave("figs/Q13_2.pdf",
+       height=4, width=12)
+
+
+### Q13_3
+# plot
+Q13_3plot <- climatesurvey %>% 
+  drop_na(Q13_3) %>%
+  count(Q13_3 = factor(Q13_3)) %>% 
+  mutate(pct = prop.table(n)) %>% 
+  ggplot(aes(x = Q13_3, y = pct, fill = Q13_3, label = scales::percent(pct))) + 
+  geom_col(position = 'dodge') + 
+  geom_text(vjust = -1.5,
+            hjust = 0, 
+            nudge_x = -.5,
+            nudge_y = .01,
+            size = 4) + 
+  scale_y_continuous(labels = scales::percent_format(accuracy = 1), 
+                     breaks = scales::pretty_breaks(n = 5), 
+                     limits = c(0, .5)) +
+  scale_fill_manual(values = rev(wes_palette("Zissou1", n = 5)))+
+  xlab("I am interested in\nlearning more about\nhow climate change\npotentially impacts my\nbusiness") + 
+  ylab("") +
+  theme_pubr() +
+  coord_flip()
+
+# clean plot
+Q13_3plot <- Q13_3plot + theme(axis.text.y   = element_blank(),
+                               axis.text.x   = element_blank(),
+                               axis.title.y  = element_text(size=14, angle=0, vjust=0.5),
+                               axis.title.x  = element_text(size=14),
+                               #panel.background = element_blank(),
+                               #panel.grid.major = element_blank(), 
+                               #panel.grid.minor = element_blank(),
+                               #axis.line = element_line(colour = "black"),
+                               #panel.border = element_rect(colour = "black", fill=NA, size=0.75),
+                               legend.position = "none",
+                               legend.title=element_blank())
+
+ggsave("figs/Q13_3.pdf",
+       height=4, width=12)
+
+
+
+
+### Q13_4
+# plot
+Q13_4plot <- climatesurvey %>% 
+  drop_na(Q13_4) %>%
+  count(Q13_4 = factor(Q13_4)) %>% 
+  mutate(pct = prop.table(n)) %>% 
+  ggplot(aes(x = Q13_4, y = pct, fill = Q13_4, label = scales::percent(pct))) + 
+  geom_col(position = 'dodge') + 
+  geom_text(vjust = -1.5,
+            hjust = 0, 
+            nudge_x = -.5,
+            nudge_y = .01,
+            size = 4) + 
+  scale_y_continuous(labels = scales::percent_format(accuracy = 1), 
+                     breaks = scales::pretty_breaks(n = 5), 
+                     limits = c(0, .5)) +
+  scale_fill_manual(values = rev(wes_palette("Zissou1", n = 5)))+
+  xlab("I trust University extension \nprograms and staff \nto provide unbiased \nclimate-change education") + 
+  ylab("Percentage") +
+  theme_pubr() +
+  coord_flip()
+
+# clean plot
+Q13_4plot <- Q13_4plot + theme(axis.text.y   = element_blank(),
+                               axis.text.x   = element_blank(),
+                               axis.title.y  = element_text(size=14, angle=0, vjust=0.5),
+                               axis.title.x  = element_text(size=14),
+                               #panel.background = element_blank(),
+                               #panel.grid.major = element_blank(), 
+                               #panel.grid.minor = element_blank(),
+                               #axis.line = element_line(colour = "black"),
+                               #panel.border = element_rect(colour = "black", fill=NA, size=0.75),
+                               legend.position = "none",
+                               legend.title=element_blank())
+ggsave("figs/Q13_4.pdf",
+       height=4, width=12)
+
+
+
+### Q13_5
+# plot
+Q13_5plot <- climatesurvey %>% 
+  drop_na(Q13_5) %>%
+  count(Q13_5 = factor(Q13_5)) %>% 
+  mutate(pct = prop.table(n)) %>% 
+  ggplot(aes(x = Q13_5, y = pct, fill = Q13_5, label = scales::percent(pct))) + 
+  geom_col(position = 'dodge') + 
+  geom_text(vjust = -1.5,
+            hjust = 0, 
+            nudge_x = -.5,
+            nudge_y = .01,
+            size = 4) + 
+  scale_y_continuous(labels = scales::percent_format(accuracy = 1), 
+                     breaks = scales::pretty_breaks(n = 5), 
+                     limits = c(0, .5)) +
+  scale_fill_manual(values = rev(wes_palette("Zissou1", n = 5)))+
+  xlab("I will attend\nclimate-change themed\nclasses even if I am\nnot required to for my\nbusiness licenses &operations") + 
+  ylab("Percentage") +
+  theme_pubr() +
+  coord_flip()
+
+# clean plot
+Q13_5plot <- Q13_5plot + theme(axis.text.y   = element_blank(),
+                               axis.text.x   = element_text(size=14, angle=0, vjust=0.5),
+                               axis.title.y  = element_text(size=14, angle=0, vjust=0.5),
+                               axis.title.x  = element_text(size=14),
+                               #panel.background = element_blank(),
+                               #panel.grid.major = element_blank(), 
+                               #panel.grid.minor = element_blank(),
+                               #axis.line = element_line(colour = "black"),
+                               #panel.border = element_rect(colour = "black", fill=NA, size=0.75),
+                               legend.position = "none",
+                               legend.title=element_blank())
+
+ggsave("figs/Q13_5.pdf",
+       height=4, width=12)
+
+
+
+# add all plots on single layout
+
+ggarrange(Q13_1plot, Q13_2plot, Q13_3plot, Q13_4plot, Q13_5plot,
+          common.legend = TRUE, legend = "top",
+          align=c("hv"),
+          ncol = 2, nrow = 3)
+
+ggsave("figs/Q13.pdf",
+       height=8, width=14)
 
 
 ## **************************************************************************************
