@@ -304,7 +304,7 @@ climatesurvey$Q9 <- fct_recode(climatesurvey$Q9,
                                "Currently enough" = "Currently doing the right amount")
 # reorder
 climatesurvey$Q9 <- factor(climatesurvey$Q9,
-                           levels = c("Much more", "More", "Currently enough", "Less", "Much less"))
+                           levels = c("Much less", "Less", "Currently enough", "More", "Much more"))
 
 
 # plot
@@ -616,15 +616,15 @@ ggsave("figs/Q11.pdf",
 ## **************************************************************************************
 
 # reorder
-climatesurvey$Q13_1 <- factor(climatesurvey$Q11_1,
+climatesurvey$Q13_1 <- factor(climatesurvey$Q13_1,
                               levels = c("Strongly disagree", "Somewhat disagree", "Undecided", "Somewhat agree", "Strongly agree"))
-climatesurvey$Q13_2 <- factor(climatesurvey$Q11_2,
+climatesurvey$Q13_2 <- factor(climatesurvey$Q13_2,
                               levels = c("Strongly disagree", "Somewhat disagree", "Undecided", "Somewhat agree", "Strongly agree"))
-climatesurvey$Q13_3 <- factor(climatesurvey$Q11_3,
+climatesurvey$Q13_3 <- factor(climatesurvey$Q13_3,
                               levels = c("Strongly disagree", "Somewhat disagree", "Undecided", "Somewhat agree", "Strongly agree"))
-climatesurvey$Q13_4 <- factor(climatesurvey$Q11_4,
+climatesurvey$Q13_4 <- factor(climatesurvey$Q13_4,
                               levels = c("Strongly disagree", "Somewhat disagree", "Undecided", "Somewhat agree", "Strongly agree"))
-climatesurvey$Q13_5 <- factor(climatesurvey$Q11_5,
+climatesurvey$Q13_5 <- factor(climatesurvey$Q13_5,
                               levels = c("Strongly disagree", "Somewhat disagree", "Undecided", "Somewhat agree", "Strongly agree"))
 
 
@@ -771,7 +771,7 @@ Q13_4plot <- climatesurvey %>%
 
 # clean plot
 Q13_4plot <- Q13_4plot + theme(axis.text.y   = element_blank(),
-                               axis.text.x   = element_blank(),
+                               axis.text.x   = element_text(size=14, angle=0, vjust=0.5),
                                axis.title.y  = element_text(size=14, angle=0, vjust=0.5),
                                axis.title.x  = element_text(size=14),
                                #panel.background = element_blank(),
