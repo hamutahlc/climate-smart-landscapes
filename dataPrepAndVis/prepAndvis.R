@@ -14,7 +14,7 @@ library(wesanderson)
 setwd("~/Dropbox")
 setwd("climate-smart-landscapes-saved")
 
-climatesurvey <- read.csv("rawData/climatedata.csv",
+climatesurvey <- read.csv("rawData/climatedata2023.csv",
                      stringsAsFactors=FALSE)
 
 ## some useful functions for cleaning/exporting data
@@ -59,9 +59,9 @@ dim(climatesurvey)
 ## drop the extra rows
 climatesurvey <- climatesurvey[-c(1,2), ]
 
-## drop all surveys that were not completed
-## climatesurvey <- climatesurvey[climatesurvey$Finished != FALSE, ]
-## dim(climatesurvey)
+## drop all surveys that were not completed, which remove the NAs
+climatesurveydropNAs <- climatesurvey[climatesurvey$Finished != FALSE, ]
+## dim(climatesurveydropNA)
 ## dropped about 52 surveys
 
 ## For response ID, make sure string of numbers is read as characters
@@ -84,7 +84,7 @@ write.csv(climatesurvey, file=file.path(dirClean,
 
 ## Number of respondents
 numRespondents <- tally(climatesurvey, sort = FALSE, name = NULL)
-## 269 respondents at this time
+## 323 respondents at this time
 
 ## List of unique counties with respondents
 ## I NEED TO DROP THE NAs STILLL AHHHH
@@ -96,7 +96,7 @@ numCounties <- length(unique(na.omit(climatesurvey$Q3)))
 
 ## Count of responents who didn't finish the survey
 numIncompleteSurveys <- length(climatesurvey[climatesurvey$Finished != FALSE, ])
-## 51 surveys not complete
+## 46 surveys not complete
 
 ## export
 summarydata <- list('numRespondents' = numRespondents, 
@@ -218,6 +218,29 @@ Q14obstacleRankPriority <- climatesurvey %>%
   summarise(count = n() ) %>%
   mutate( percent = count / sum(count)*100 )
 
+## Q15. What is your preferred format for receiving extension education? Please rank in order of importance, with 1=most preferred and 5=leastpreferred.
+
+Q15formatRankWrittenMaterials <- climatesurvey %>%
+  group_by(Q15_1) %>%
+  summarise(count = n() ) %>%
+  mutate( percent = count / sum(count)*100 )
+Q15formatRankInPersonLec <- climatesurvey %>%
+  group_by(Q15_2) %>%
+  summarise(count = n() ) %>%
+  mutate( percent = count / sum(count)*100 )
+Q15formatRankVirtualLec <- climatesurvey %>%
+  group_by(Q15_3) %>%
+  summarise(count = n() ) %>%
+  mutate( percent = count / sum(count)*100 )
+Q15formatRankWorkshops <- climatesurvey %>%
+  group_by(Q15_4) %>%
+  summarise(count = n() ) %>%
+  mutate( percent = count / sum(count)*100 )
+Q15formatRankInformal <- climatesurvey %>%
+  group_by(Q15_5) %>%
+  summarise(count = n() ) %>%
+  mutate( percent = count / sum(count)*100 )
+
 
 ## Q17. Highest level education
 Q17Education <- climatesurvey %>%
@@ -278,6 +301,11 @@ tabledata <- list('Q1participantRole' = Q1participantRole,
                   'Q14obstacleRankTools' = Q14obstacleRankTools,
                   'Q14obstacleRankInterest' = Q14obstacleRankInterest,
                   'Q14obstacleRankPriority' = Q14obstacleRankPriority,
+                  'Q15formatRankWrittenMaterials' = Q15formatRankWrittenMaterials,
+                  'Q15formatRankInPersonLec' = Q15formatRankInPersonLec,
+                  'Q15formatRankVirtualLec' = Q15formatRankVirtualLec,
+                  'Q15formatRankWorkshops' = Q15formatRankWorkshops,
+                  'Q15formatRankInformal' = Q15formatRankInformal,
                   'Q17Education' = Q17Education,
                   'Q18Associations' = Q18Associations,
                   'Q19Licensed' = Q19Licensed,
@@ -293,7 +321,6 @@ write.xlsx(tabledata, file=file.path(dirTables,
 ## when participants select multiple that apply...
 ## i still need to figure out how to table summarize that better
 
-## still need to make tables with the NAs as well
 
 ## **************************************************************************************
 ## FIGURE - Q9 Do you think that green industry should be doing more less (NAs removed)
@@ -340,7 +367,7 @@ Q9plot + theme(axis.text.y   = element_text(size=14),
                panel.border = element_rect(colour = "black", fill=NA, size=0.75),
                legend.position = "none")
 
-ggsave("figs/Q9.pdf",
+ggsave("figs/Q9ShouldGreenIndustryDoMoreToAddressClimateChange.pdf",
        height=4, width=5)
 
 ## **************************************************************************************
@@ -608,7 +635,7 @@ ggarrange(Q11_1plot, Q11_2plot, Q11_3plot, Q11_4plot, Q11_5plot, Q11_6plot,
           align=c("v"),
           ncol = 2, nrow = 3)
 
-ggsave("figs/Q11.pdf",
+ggsave("figs/Q11Attitudes.pdf",
        height=8, width=14)
 
 ## **************************************************************************************
@@ -684,7 +711,7 @@ Q13_2plot <- climatesurvey %>%
                      breaks = scales::pretty_breaks(n = 5), 
                      limits = c(0, .5)) +
   scale_fill_manual(values = rev(wes_palette("Zissou1", n = 5)))+
-  xlab("Marketing my company\nas climate-friendly is\na business advantaget") + 
+  xlab("Marketing my company\nas climate-friendly is \na business advantage") + 
   ylab("") +
   theme_pubr() +
   coord_flip()
@@ -803,7 +830,7 @@ Q13_5plot <- climatesurvey %>%
                      breaks = scales::pretty_breaks(n = 5), 
                      limits = c(0, .5)) +
   scale_fill_manual(values = rev(wes_palette("Zissou1", n = 5)))+
-  xlab("I will attend\nclimate-change themed\nclasses even if I am\nnot required to for my\nbusiness licenses &operations") + 
+  xlab("I will attend\nclimate-change themed\nclasses even if I am\nnot required to for my\nbusiness licenses & operations") + 
   ylab("Percentage") +
   theme_pubr() +
   coord_flip()
@@ -833,7 +860,7 @@ ggarrange(Q13_1plot, Q13_2plot, Q13_3plot, Q13_4plot, Q13_5plot,
           align=c("hv"),
           ncol = 2, nrow = 3)
 
-ggsave("figs/Q13.pdf",
+ggsave("figs/Q13Incentives.pdf",
        height=8, width=14)
 
 
@@ -844,7 +871,7 @@ ggsave("figs/Q13.pdf",
 
 ## Q1. Please select the roles that best describes you
 ## this is ugly because allowed participated to "select all that apply."
-Q1participantRole <- climatesurvey %>%
+Q1participantRole <- climatesurveydropNAs %>%
   separate_rows(Q1, sep = ',\\s*') %>%
   filter(!is.na(Q1)) %>%
   group_by(Q1) %>%
@@ -852,28 +879,28 @@ Q1participantRole <- climatesurvey %>%
   mutate( percent = count / sum(count)*100 )
 
 ## Q2. How long have you been in this industry
-Q2Experience <- climatesurvey %>%
+Q2Experience <- climatesurveydropNAs %>%
   filter(!is.na(Q2)) %>%
   group_by(Q2) %>%
   summarise(count = n() ) %>%
   mutate( percent = count / sum(count)*100 )
 
 ## Q3. Number and Percent of respondents per county, ranked
-Q3percRespondentsPerCounty <- climatesurvey %>%
+Q3percRespondentsPerCounty <- climatesurveydropNAs %>%
   filter(!is.na(Q3)) %>%
   group_by(Q3) %>%
   summarise(count = n() ) %>%
   mutate( percent = count / sum(count)*100 )
 
 ## Q4. Do you hold a management role
-Q4mgmtRole <- climatesurvey %>%
+Q4mgmtRole <- climatesurveydropNAs %>%
   filter(!is.na(Q4)) %>%
   group_by(Q4) %>%
   summarise(count = n() ) %>%
   mutate( percent = count / sum(count)*100 )
 
 ## Q5. Does your company market at climate friendly
-Q5marketClimate <- climatesurvey %>%
+Q5marketClimate <- climatesurveydropNAs %>%
   filter(!is.na(Q5)) %>%
   group_by(Q5) %>%
   summarise(count = n() ) %>%
@@ -881,7 +908,7 @@ Q5marketClimate <- climatesurvey %>%
 
 
 ## Q6. Where do you receive information about climate change
-Q6climateInfo <- climatesurvey %>%
+Q6climateInfo <- climatesurveydropNAs %>%
   separate_rows(Q6, sep = ',\\s*') %>%
   filter(!is.na(Q6)) %>%
   group_by(Q6) %>%
@@ -889,48 +916,48 @@ Q6climateInfo <- climatesurvey %>%
   mutate( percent = count / sum(count)*100 )
 
 ## Q7. Do you believe human activity is the primary cause of climate change
-Q7humansClimateChange <- climatesurvey %>%
+Q7humansClimateChange <- climatesurveydropNAs %>%
   filter(!is.na(Q7)) %>%
   group_by(Q7) %>%
   summarise(count = n() ) %>%
   mutate( percent = count / sum(count)*100 )
 
 ## Q8. Assuming that climate change is happening, do you believe it is caused by
-Q8whyClimateChange <- climatesurvey %>%
+Q8whyClimateChange <- climatesurveydropNAs %>%
   filter(!is.na(Q8)) %>%
   group_by(Q8) %>%
   summarise(count = n() ) %>%
   mutate( percent = count / sum(count)*100 )
 
 ## Q10 Do you believe that climate change is relevant to your business operations, clients, and properties you serve in Florida?
-Q10ClimateChangeRelevancy <- climatesurvey %>%
+Q10ClimateChangeRelevancy <- climatesurveydropNAs %>%
   filter(!is.na(Q10)) %>%
   group_by(Q10) %>%
   summarise(count = n() ) %>%
   mutate( percent = count / sum(count)*100 )
 
 ## Q12.Please read the following statements related to climate change and indicate whether you believe the statement is true or false
-Q12Fact1 <- climatesurvey %>%
+Q12Fact1 <- climatesurveydropNAs %>%
   filter(!is.na(Q12_1)) %>%
   group_by(Q12_1) %>%
   summarise(count = n() ) %>%
   mutate( percent = count / sum(count)*100 )
-Q12Fact2 <- climatesurvey %>%
+Q12Fact2 <- climatesurveydropNAs %>%
   filter(!is.na(Q12_2)) %>%
   group_by(Q12_2) %>%
   summarise(count = n() ) %>%
   mutate( percent = count / sum(count)*100 )
-Q12Fact3 <- climatesurvey %>%
+Q12Fact3 <- climatesurveydropNAs %>%
   filter(!is.na(Q12_3)) %>%
   group_by(Q12_3) %>%
   summarise(count = n() ) %>%
   mutate( percent = count / sum(count)*100 )
-Q12Fact4 <- climatesurvey %>%
+Q12Fact4 <- climatesurveydropNAs %>%
   filter(!is.na(Q12_4)) %>%
   group_by(Q12_4) %>%
   summarise(count = n() ) %>%
   mutate( percent = count / sum(count)*100 )
-Q12Fact5 <- climatesurvey %>%
+Q12Fact5 <- climatesurveydropNAs %>%
   filter(!is.na(Q12_5)) %>%
   group_by(Q12_5) %>%
   summarise(count = n() ) %>%
@@ -938,42 +965,65 @@ Q12Fact5 <- climatesurvey %>%
 
 ## Q14. What is the biggest obstacle to implementing climate-friendly practices? Please rank in order of importance, with 1=biggest obstacle and 5=smallest obstacle.
 
-Q14obstacleRankCost <- climatesurvey %>%
+Q14obstacleRankCost <- climatesurveydropNAs %>%
   group_by(Q14_1) %>%
   filter(!is.na(Q14_1)) %>%
   summarise(count = n() ) %>%
   mutate( percent = count / sum(count)*100 )
-Q14obstacleRankKnwldge <- climatesurvey %>%
+Q14obstacleRankKnwldge <- climatesurveydropNAs %>%
   filter(!is.na(Q14_2)) %>%
   group_by(Q14_2) %>%
   summarise(count = n() ) %>%
   mutate( percent = count / sum(count)*100 )
-Q14obstacleRankTools <- climatesurvey %>%
+Q14obstacleRankTools <- climatesurveydropNAs %>%
   filter(!is.na(Q14_3)) %>%
   group_by(Q14_3) %>%
   summarise(count = n() ) %>%
   mutate( percent = count / sum(count)*100 )
-Q14obstacleRankInterest <- climatesurvey %>%
+Q14obstacleRankInterest <- climatesurveydropNAs %>%
   filter(!is.na(Q14_4)) %>%
   group_by(Q14_4) %>%
   summarise(count = n() ) %>%
   mutate( percent = count / sum(count)*100 )
-Q14obstacleRankPriority <- climatesurvey %>%
+Q14obstacleRankPriority <- climatesurveydropNAs %>%
   filter(!is.na(Q14_5)) %>%
   group_by(Q14_5) %>%
   summarise(count = n() ) %>%
   mutate( percent = count / sum(count)*100 )
 
 
+## Q15. What is your preferred format for receiving extension education? Please rank in order of importance, with 1=most preferred and 5=leastpreferred.
+
+Q15formatRankWrittenMaterials <- climatesurveydropNAs %>%
+  group_by(Q15_1) %>%
+  summarise(count = n() ) %>%
+  mutate( percent = count / sum(count)*100 )
+Q15formatRankInPersonLec <- climatesurveydropNAs %>%
+  group_by(Q15_2) %>%
+  summarise(count = n() ) %>%
+  mutate( percent = count / sum(count)*100 )
+Q15formatRankVirtualLec <- climatesurveydropNAs %>%
+  group_by(Q15_3) %>%
+  summarise(count = n() ) %>%
+  mutate( percent = count / sum(count)*100 )
+Q15formatRankWorkshops <- climatesurveydropNAs %>%
+  group_by(Q15_4) %>%
+  summarise(count = n() ) %>%
+  mutate( percent = count / sum(count)*100 )
+Q15formatRankInformal <- climatesurveydropNAs %>%
+  group_by(Q15_5) %>%
+  summarise(count = n() ) %>%
+  mutate( percent = count / sum(count)*100 )
+  
 ## Q17. Highest level education
-Q17Education <- climatesurvey %>%
+Q17Education <- climatesurveydropNAs %>%
   filter(!is.na(Q17)) %>%
   group_by(Q17) %>%
   summarise(count = n() ) %>%
   mutate( percent = count / sum(count)*100 )
 
 ## Q18. Which professional memberships do you currently hold?
-Q18Associations <- climatesurvey %>%
+Q18Associations <- climatesurveydropNAs %>%
   separate_rows(Q18, sep = ',\\s*') %>%
   filter(!is.na(Q18)) %>%
   group_by(Q18) %>%
@@ -981,28 +1031,28 @@ Q18Associations <- climatesurvey %>%
   mutate( percent = count / sum(count)*100 )
 
 ## Q19. Do you have a pesticide license from the Florida Department of Agriculture andConsumer Sciences (FDACS)?
-Q19Licensed <- climatesurvey %>%
+Q19Licensed <- climatesurveydropNAs %>%
   filter(!is.na(Q19)) %>%
   group_by(Q19) %>%
   summarise(count = n() ) %>%
   mutate( percent = count / sum(count)*100 )
 
 ## Q20. What is your sex
-Q20Sex <- climatesurvey %>%
+Q20Sex <- climatesurveydropNAs %>%
   filter(!is.na(Q20)) %>%
   group_by(Q20) %>%
   summarise(count = n() ) %>%
   mutate( percent = count / sum(count)*100 )
 
 ## Q21. Are you Hispanic or Latino?
-Q21Hispanic <- climatesurvey %>%
+Q21Hispanic <- climatesurveydropNAs %>%
   filter(!is.na(Q21)) %>%
   group_by(Q21) %>%
   summarise(count = n() ) %>%
   mutate( percent = count / sum(count)*100 )
 
 ## Q22. Which category(ies) best describes you?
-Q22RaceEthnicity <- climatesurvey %>%
+Q22RaceEthnicity <- climatesurveydropNAs %>%
   separate_rows(Q22, sep = ',\\s*') %>%
   filter(!is.na(Q22)) %>%
   group_by(Q22) %>%
@@ -1030,6 +1080,11 @@ tabledataOmitNA <- list('Q1participantRole' = Q1participantRole,
                   'Q14obstacleRankTools' = Q14obstacleRankTools,
                   'Q14obstacleRankInterest' = Q14obstacleRankInterest,
                   'Q14obstacleRankPriority' = Q14obstacleRankPriority,
+                  'Q15formatRankWrittenMaterials' = Q15formatRankWrittenMaterials,
+                  'Q15formatRankInPersonLec' = Q15formatRankInPersonLec,
+                  'Q15formatRankVirtualLec' = Q15formatRankVirtualLec,
+                  'Q15formatRankWorkshops' = Q15formatRankWorkshops,
+                  'Q15formatRankInformal' = Q15formatRankInformal,
                   'Q17Education' = Q17Education,
                   'Q18Associations' = Q18Associations,
                   'Q19Licensed' = Q19Licensed,

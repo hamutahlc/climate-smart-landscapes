@@ -6,10 +6,10 @@ install.packages("lubridate")
 install.packages("ggplot2")
 install.packages("viridis")
 install.packages("openxlsx")
-install.packages("dplyr")
 install.packages("ggpubr")
 install.packages("scales")
 install.packages("wesanderson")
+install.packages("tidyverse")
 
 ## install and load libraries for all analyses
 install.packages("vegan")
