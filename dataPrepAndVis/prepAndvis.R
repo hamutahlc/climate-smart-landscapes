@@ -37,6 +37,7 @@ climatesurvey$StartDate <- NULL
 climatesurvey$EndDate <- NULL
 climatesurvey$Status <- NULL
 climatesurvey$Progress <- NULL
+climatesurvey$RecordedDate <- NULL
 climatesurvey$Duration..in.seconds. <- NULL
 climatesurvey$IPAddress <- NULL
 climatesurvey$RecipientLastName <- NULL

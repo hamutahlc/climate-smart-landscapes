@@ -17,6 +17,14 @@ install.packages("piecewiseSEM")
 install.packages("lme4")
 install.packages("lmerTest")
 install.packages("brms")
+install.packages("reshape2")
+install.packages("readxl")
+install.packages("ggrepel")
+install.packages("devtools")
+install.packages("factoextra")
+
+
+
 
 
 
