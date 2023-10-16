@@ -63,7 +63,7 @@ climatesurvey <- climatesurvey[-c(1,2), ]
 ## drop all surveys that were not completed, which remove the NAs
 climatesurveydropNAs <- climatesurvey[climatesurvey$Finished != FALSE, ]
 ## dim(climatesurveydropNA)
-## dropped about 52 surveys
+## dropped 53 surveys
 
 ## For response ID, make sure string of numbers is read as characters
 climatesurvey$ResponseId <- as.character(climatesurvey$ResponseId)

@@ -6,6 +6,14 @@ library(dplyr)
 
 ## load data
 
+
+## steps what kind of clustering method works for mixed data
+## which data can i transform to match together
+## emilio laca may be able to help from UC
+## spatial questions -- county map of the state - can make a choropleth map of the counties, visualize how many respondents from each county or attitudes across counties
+## are there variables associated with peoples locations - income of the county, socioeconomic variables, how close they are to a climate change threat, like the coast. 
+## can chose the location to plop out other variables
+
 setwd("~/Dropbox")
 setwd("climate-smart-landscapes-saved")
 
